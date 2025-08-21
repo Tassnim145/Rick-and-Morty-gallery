@@ -2,6 +2,9 @@ const container = document.getElementById("characters-container");
 const searchInput = document.getElementById("searchInput");
 const filterType = document.getElementById("filterType");
 const filterValue = document.getElementById("filterValue");
+const sortSelect = document.getElementById("sortSelect");
+
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 let allCharacters = [];
 
@@ -31,7 +34,22 @@ function displayCharacters(characters) {
             <img src="${character.image}" alt="${character.name}">
             <p>Status: ${character.status}</p>
             <p>Species: ${character.species}</p>
+            <button class="heart-btn ${favorites.includes(character.id) ? 'active' : ''}" data-id="${character.id}">
+            <span class="heart-shape"></span>
+            </button>
         `;
+
+        card.querySelector(".heart-btn").addEventListener("click", (e) => {
+            const id = parseInt(e.target.closest('button').dataset.id);
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+            displayCharacters(characters);
+        });
+
         container.appendChild(card);
     });
 }
@@ -66,11 +84,30 @@ function applyFilters() {
         return matchesSearch && matchesFilter;
     });
 
-    displayCharacters(filtered);
+    const sorted = sortCharacters(filtered);
+    displayCharacters(sorted);
+}
+
+function sortCharacters(characters) {
+    const sortValue = sortSelect.value;
+
+    switch (sortValue) {
+        case "name-asc":
+            return characters.sort((a, b) => a.name.localeCompare(b.name));
+        case "name-desc":
+            return characters.sort((a, b) => b.name.localeCompare(a.name));
+        case "status":
+            return characters.sort((a, b) => a.status.localeCompare(b.status));
+        case "species":
+            return characters.sort((a, b) => a.species.localeCompare(b.species));
+        default:
+            return characters;
+    }
 }
 
 searchInput.addEventListener("input", applyFilters);
 filterType.addEventListener("change", updateFilterValues);
 filterValue.addEventListener("change", applyFilters);
+sortSelect.addEventListener("change", applyFilters);
 
 fetchAllCharacters();
