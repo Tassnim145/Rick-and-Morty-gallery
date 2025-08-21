@@ -8,6 +8,19 @@
 </head>
 <body>
     <h1>Rick & Morty characters</h1>
+    
+    <label for="filterType">Filter by:</label>
+    <select id="filterType">
+        <option value="">--Select filter--</option>
+        <option value="status">Status</option>
+        <option value="species">Species</option>
+    </select>
+
+    <label for="filterValue">Value:</label>
+    <select id="filterValue" disabled>
+        <option value="">--Select a value--</option>
+    </select>
+
     <input
     type="text"
     id="searchInput"
