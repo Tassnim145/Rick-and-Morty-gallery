@@ -3,6 +3,8 @@ const searchInput = document.getElementById("searchInput");
 const filterType = document.getElementById("filterType");
 const filterValue = document.getElementById("filterValue");
 const sortSelect = document.getElementById("sortSelect");
+const favoritesToggle = document.getElementById("favoritesToggle");
+const favoritesToggleContainer = document.getElementById("favoritesToggleContainer");
 
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
@@ -21,6 +23,7 @@ async function fetchAllCharacters() {
 
     allCharacters = allData;
     displayCharacters(allCharacters);
+    updateFavoritesToggleVisibility();
 }
 
 function displayCharacters(characters) {
@@ -29,29 +32,36 @@ function displayCharacters(characters) {
     characters.forEach(character => {
         const card = document.createElement("div");
         card.className = "character-card";
+
+        const isFavorite = favorites.includes(character.id);
+
         card.innerHTML = `
             <h3>${character.name}</h3>
             <img src="${character.image}" alt="${character.name}">
             <p>Status: ${character.status}</p>
             <p>Species: ${character.species}</p>
-            <button class="heart-btn ${favorites.includes(character.id) ? 'active' : ''}" data-id="${character.id}">
-            <span class="heart-shape"></span>
-            </button>
-        `;
+            <button class="favorite-btn" data-id ="${character.id}">
+            ${isFavorite ? "❤️" : "🤍"}
+            </button>`;
 
-        card.querySelector(".heart-btn").addEventListener("click", (e) => {
-            const id = parseInt(e.target.closest('button').dataset.id);
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => favId !== id);
-            } else {
-                favorites.push(id);
-            }
-            localStorage.setItem("favorites", JSON.stringify(favorites));
-            displayCharacters(characters);
-        });
-
-        container.appendChild(card);
+            container.appendChild(card);
     });
+
+        document.querySelectorAll(".favorite-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = parseInt(btn.getAttribute("data-id"));
+
+                if (favorites.includes(id)) {
+                    favorites = favorites.filter(fav => fav !== id);
+                } else {
+                    favorites.push(id);
+                }
+                
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                updateFavoritesToggleVisibility();
+                applyFilters();
+            });
+        });
 }
 
 function updateFilterValues() {
@@ -73,19 +83,38 @@ function updateFilterValues() {
     filterValue.disabled = false;
 }
 
+function updateFavoritesToggleVisibility() {
+    const hasFavorites = favorites.length > 0;
+    favoritesToggleContainer.style.display = hasFavorites ? "block" : "none";
+
+    if (!hasFavorites) {
+        favoritesToggle.checked = false;
+    }
+}
+
 function applyFilters() {
     const searchTerm = searchInput.value.toLowerCase();
     const type = filterType.value;
     const value = filterValue.value;
+    const showFavoritesOnly = favoritesToggle.checked;
 
-    const filtered = allCharacters.filter(character => {
+    let filtered = allCharacters.filter(character => {
         const matchesSearch = character.name.toLowerCase().includes(searchTerm);
         const matchesFilter = type === "" || value === "" || character[type] === value;
-        return matchesSearch && matchesFilter;
+        const matchesFavorite = !showFavoritesOnly || favorites.includes(character.id);
+        return matchesSearch && matchesFilter && matchesFavorite;
     });
 
     const sorted = sortCharacters(filtered);
     displayCharacters(sorted);
+
+    const hasFavorites = favorites.length >0;
+    favoritesToggleContainer.style.display = hasFavorites ? "block" : "none";
+
+    if(!hasFavorites) {
+        favoritesToggle.checked = false;
+    }
+
 }
 
 function sortCharacters(characters) {
@@ -109,5 +138,7 @@ searchInput.addEventListener("input", applyFilters);
 filterType.addEventListener("change", updateFilterValues);
 filterValue.addEventListener("change", applyFilters);
 sortSelect.addEventListener("change", applyFilters);
+favoritesToggle.addEventListener("change", applyFilters);
 
 fetchAllCharacters();
+
