@@ -9,6 +9,24 @@ const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const pageInfo = document.getElementById("pageInfo");
 
+// Modal elements
+const characterModal = document.getElementById("characterModal");
+const modalCharacterName = document.getElementById("modalCharacterName");
+const modalCharacterImage = document.getElementById("modalCharacterImage");
+const modalStatusBadge = document.getElementById("modalStatusBadge");
+const modalSpecies = document.getElementById("modalSpecies");
+const modalGender = document.getElementById("modalGender");
+const modalStatus = document.getElementById("modalStatus");
+const modalOrigin = document.getElementById("modalOrigin");
+const modalType = document.getElementById("modalType");
+const modalLocation = document.getElementById("modalLocation");
+const modalCreated = document.getElementById("modalCreated");
+const modalEpisodeCount = document.getElementById("modalEpisodeCount");
+const modalFavoriteBtn = document.getElementById("modalFavoriteBtn");
+const modalFavoriteIcon = document.getElementById("modalFavoriteIcon");
+const modalFavoriteText = document.getElementById("modalFavoriteText");
+const modalEpisodesList = document.getElementById("modalEpisodesList");
+
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 let allCharacters = [];
 let currentPage = 1;
@@ -16,12 +34,12 @@ const cardsPerPage = 20; // Show 20 cards per page for better performance
 
 // Carousel functionality
 let currentCarouselIndex = 0;
-const carouselItemsPerView = 30; // Number of items visible at once - increased since cards are smaller
+const carouselItemsPerView = 18; // Number of items visible at once
 
 async function fetchAllCharacters() {
     try {
         // Show loading state
-        container.innerHTML = '<div class="loading">Loading characters from the multiverse...</div>';
+        container.innerHTML = '<div class="loading"><div class="loading-text">Loading characters from the multiverse...</div><div class="loading-spinner"></div></div>';
         
         let allData = [];
         let nextUrl = 'https://rickandmortyapi.com/api/character';
@@ -47,7 +65,13 @@ function displayCharacters(characters) {
     container.innerHTML = '';
     
     if (characters.length === 0) {
-        container.innerHTML = '<div class="loading">No characters found<br>matching your criteria.</div>';
+        // Check if this is because of "Show only favorites" filter
+        const showFavoritesOnly = favoritesToggle.checked;
+        if (showFavoritesOnly && favorites.length === 0) {
+            container.innerHTML = '<div class="no-results"><div class="loading-spinner"></div><div class="no-results-text">No favorites yet</div><div class="no-results-suggestion">Add some characters to your favorites first</div></div>';
+        } else {
+            container.innerHTML = '<div class="no-results"><div class="no-results-icon">🔍</div><div class="no-results-text">No characters found matching your criteria</div><div class="no-results-suggestion">Try adjusting your search or filters</div></div>';
+        }
         return;
     }
 
@@ -64,36 +88,70 @@ function displayCharacters(characters) {
         const statusClass = `status-${character.status.toLowerCase()}`;
 
         card.innerHTML = `
-            <h3>${character.name}</h3>
-            <img src="${character.image}" alt="${character.name}" loading="lazy">
-            <p class="${statusClass}">Status: ${character.status}</p>
-            <p>Species: ${character.species}</p>
-            <p>Gender: ${character.gender}</p>
-            <p>Origin: ${character.origin.name}</p>
-            <button class="favorite-btn" data-id="${character.id}" title="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
-                ${isFavorite ? "❤️" : "🤍"}
-            </button>`;
+            <div class="card-header">
+                <h3 class="character-name">${character.name}</h3>
+                <div class="status-badge ${statusClass}">${character.status}</div>
+            </div>
+            <div class="card-image-container">
+                <img src="${character.image}" alt="${character.name}" loading="lazy">
+                <div class="image-overlay">
+                    <button class="favorite-btn" data-id="${character.id}" title="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
+                        ${isFavorite ? "❤️" : "🤍"}
+                    </button>
+                </div>
+            </div>
+            <div class="card-details">
+                <div class="detail-item">
+                    <span class="detail-label">Species:</span>
+                    <span class="detail-value" title="${character.species}">${character.species}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Gender:</span>
+                    <span class="detail-value" title="${character.gender}">${character.gender}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Origin:</span>
+                    <span class="detail-value" title="${character.origin.name}">${character.origin.name}</span>
+                </div>
+            </div>`;
 
         container.appendChild(card);
     });
 
-    // Add event listeners to favorite buttons
-    document.querySelectorAll(".favorite-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = parseInt(btn.getAttribute("data-id"));
+    // Add event listeners to character cards and favorite buttons
+    document.querySelectorAll(".character-card").forEach((card, index) => {
+        const character = charactersToShow[index];
+        
+        // Add click event to open modal
+        card.addEventListener("click", (e) => {
+            // Don't open modal if clicking on favorite button
+            if (!e.target.closest('.favorite-btn')) {
+                openCharacterModal(character);
+            }
+        });
+        
+        // Add event listener to favorite button
+        const favoriteBtn = card.querySelector(".favorite-btn");
+        favoriteBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // Prevent modal from opening
+            const id = parseInt(favoriteBtn.getAttribute("data-id"));
 
             if (favorites.includes(id)) {
                 favorites = favorites.filter(fav => fav !== id);
-                btn.innerHTML = "🤍";
-                btn.title = "Add to favorites";
+                favoriteBtn.innerHTML = "🤍";
+                favoriteBtn.title = "Add to favorites";
             } else {
                 favorites.push(id);
-                btn.innerHTML = "❤️";
-                btn.title = "Remove from favorites";
+                favoriteBtn.innerHTML = "❤️";
+                favoriteBtn.title = "Remove from favorites";
             }
             
             localStorage.setItem("favorites", JSON.stringify(favorites));
             updateFavoritesToggleVisibility();
+            
+            // Always refresh the display after favorites change
+            const filteredCharacters = getFilteredCharacters();
+            displayCharacters(filteredCharacters);
         });
     });
 
@@ -237,6 +295,122 @@ document.addEventListener('keydown', (e) => {
         goToFirstPage();
     } else if (e.key === 'End') {
         goToLastPage();
+    }
+});
+
+// Modal Functions
+function openCharacterModal(character) {
+    // Populate modal with character data
+    modalCharacterName.textContent = character.name;
+    modalCharacterImage.src = character.image;
+    modalCharacterImage.alt = character.name;
+    
+    // Set status badge with appropriate class
+    const statusClass = `status-${character.status.toLowerCase()}`;
+    modalStatusBadge.className = `modal-status-badge ${statusClass}`;
+    modalStatusBadge.textContent = character.status;
+    
+    // Populate details
+    modalSpecies.textContent = character.species || 'Unknown';
+    modalGender.textContent = character.gender || 'Unknown';
+    modalStatus.textContent = character.status || 'Unknown';
+    modalOrigin.textContent = character.origin?.name || 'Unknown';
+    modalType.textContent = character.type || 'Unknown';
+    modalLocation.textContent = character.location?.name || 'Unknown';
+    
+    // Format created date
+    if (character.created) {
+        const date = new Date(character.created);
+        modalCreated.textContent = date.toLocaleDateString();
+    } else {
+        modalCreated.textContent = 'Unknown';
+    }
+    
+    // Set episode count
+    modalEpisodeCount.textContent = character.episode?.length || 0;
+    
+    // Debug: Log episode data
+    console.log(`Episode data for ${character.name}:`, character.episode);
+    
+    // Populate episodes list
+    modalEpisodesList.innerHTML = '';
+    if (character.episode && character.episode.length > 0) {
+        character.episode.forEach((episodeUrl, index) => {
+            let episodeText = '';
+            
+            // Try to extract episode number from URL
+            if (episodeUrl && typeof episodeUrl === 'string') {
+                const episodeNumber = episodeUrl.split('/').pop();
+                if (episodeNumber && !isNaN(episodeNumber)) {
+                    episodeText = `Episode ${episodeNumber}`;
+                } else {
+                    episodeText = `Episode ${index + 1}`;
+                }
+            } else {
+                episodeText = `Episode ${index + 1}`;
+            }
+            
+            const episodeItem = document.createElement('div');
+            episodeItem.className = 'episode-item';
+            episodeItem.innerHTML = `<span>${episodeText}</span>`;
+            modalEpisodesList.appendChild(episodeItem);
+        });
+    } else {
+        const noEpisodesItem = document.createElement('div');
+        noEpisodesItem.className = 'episode-item no-episodes';
+        noEpisodesItem.innerHTML = '<span>No episodes found</span>';
+        modalEpisodesList.appendChild(noEpisodesItem);
+    }
+    
+    // Update favorite button
+    const isFavorite = favorites.includes(character.id);
+    modalFavoriteIcon.textContent = isFavorite ? "❤️" : "🤍";
+    modalFavoriteText.textContent = isFavorite ? "Remove from Favorites" : "Add to Favorites";
+    
+    // Add event listener to modal favorite button
+    modalFavoriteBtn.onclick = () => {
+        const currentIsFavorite = favorites.includes(character.id);
+        
+        if (currentIsFavorite) {
+            favorites = favorites.filter(fav => fav !== character.id);
+            modalFavoriteIcon.textContent = "🤍";
+            modalFavoriteText.textContent = "Add to Favorites";
+        } else {
+            favorites.push(character.id);
+            modalFavoriteIcon.textContent = "❤️";
+            modalFavoriteText.textContent = "Remove from Favorites";
+        }
+        
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        updateFavoritesToggleVisibility();
+        
+        // Refresh the main display
+        const filteredCharacters = getFilteredCharacters();
+        displayCharacters(filteredCharacters);
+    };
+    
+    // Show modal
+    characterModal.style.display = "block";
+}
+
+function closeCharacterModal() {
+    characterModal.style.display = "none";
+}
+
+// Modal event listeners
+document.querySelector('.modal-close-btn').addEventListener('click', closeCharacterModal);
+
+// Close modal when clicking outside
+characterModal.addEventListener('click', (e) => {
+    if (e.target === characterModal) {
+        closeCharacterModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && characterModal.style.display === 'block') {
+        closeCharacterModal();
     }
 });
 

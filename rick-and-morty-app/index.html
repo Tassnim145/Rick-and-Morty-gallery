@@ -60,8 +60,68 @@
         <button class="pagination-btn" id="nextBtn">Next</button>
     </div>
 
-    <div id="characters-container"></div>
-
+        <div id="characters-container"></div>
+    
+    <!-- Character Details Modal -->
+    <div id="characterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalCharacterName"></h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-section">
+                    <img id="modalCharacterImage" src="" alt="">
+                    <div class="modal-status-badge" id="modalStatusBadge"></div>
+                </div>
+                <div class="modal-details-section">
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Species:</span>
+                        <span class="modal-detail-value" id="modalSpecies"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Gender:</span>
+                        <span class="modal-detail-value" id="modalGender"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Status:</span>
+                        <span class="modal-detail-value" id="modalStatus"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Origin:</span>
+                        <span class="modal-detail-value" id="modalOrigin"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Type:</span>
+                        <span class="modal-detail-value" id="modalType"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Location:</span>
+                        <span class="modal-detail-value" id="modalLocation"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Created:</span>
+                        <span class="modal-detail-value" id="modalCreated"></span>
+                    </div>
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Episode Count:</span>
+                        <span class="modal-detail-value" id="modalEpisodeCount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-episodes-section">
+                <h3>Episode Appearances</h3>
+                <div id="modalEpisodesList" class="episodes-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-favorite-btn" id="modalFavoriteBtn">
+                    <span id="modalFavoriteIcon">🤍</span>
+                    <span id="modalFavoriteText">Add to Favorites</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>
