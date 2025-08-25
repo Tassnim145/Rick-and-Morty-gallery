@@ -1,101 +1,526 @@
+/* Rick and Morty Theme - Black and Green */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #001a00 100%);
+    color: #00ff41;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Header and Controls */
+h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+    background: linear-gradient(45deg, #00ff41, #00cc33);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.controls-section {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff41;
+    border-radius: 15px;
     padding: 20px;
-    background: #f0f8ff;
-    color: #333;
+    margin: 20px auto;
+    max-width: 1400px;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+}
+
+.controls-row {
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    align-items: stretch;
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    margin-bottom: 0;
+}
+
+.search-favorites-row {
+    display: none;
+}
+
+.control-group {
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    align-items: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    gap: 8px;
+    min-width: 150px;
+    flex: 1;
+    max-width: 200px;
+}
+
+.search-group {
+    min-width: 200px;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    flex: 1;
+}
+
+.favorites-group {
+    min-width: 250px;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-group label {
+    font-size: 0.9rem;
+    color: #00cc33;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
+    height: 20px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     text-align: center;
 }
 
-h1 {
-    margin-bottom: 20px;
+#searchInput, #filterType, #filterValue, #sortSelect {
+    padding: 12px 16px;
+    font-size: 13px;
+    background: #000;
+    border: 2px solid #00ff41;
+    border-radius: 10px;
+    color: #00ff41;
+    font-family: 'Orbitron', monospace;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    min-width: 150px;
+    text-align: center;
+    height: 45px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 #searchInput {
-    padding: 10px;
-    font-size: 16px;
-    margin: 20px auto;
-    width: 300px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    display: block;
+    min-width: 100%;
+    text-align: left;
+    height: 45px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-#characters-container {
+#searchInput:focus, #filterType:focus, #filterValue:focus, #sortSelect:focus {
+    outline: none;
+    border-color: #00cc33;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+    background: #001a00;
+    transform: translateY(-2px);
+}
+
+#searchInput::placeholder {
+    color: #00cc33;
+    opacity: 0.7;
+}
+
+/* Favorites Toggle */
+#favoritesToggleContainer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    align-items: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    gap: 12px;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    padding: 12px 25px;
+    background: rgba(0, 26, 0, 0.3);
+    border-radius: 10px;
+    border: 2px solid #00ff41;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    min-height: 45px;
+    min-width: 220px;
+    box-sizing: border-box;
+    height: 45px;
+    width: 100%;
+    margin-top: 0;
+}
+
+#favoritesToggleContainer:hover {
+    background: rgba(0, 26, 0, 0.5);
+    border-color: #00cc33;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+    transform: translateY(-2px);
+}
+
+#favoritesToggleContainer span {
+    color: #00cc33;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
 
-.characters-card {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    width: 200px;
+#favoritesToggle {
+    width: 20px;
+    height: 20px;
+    accent-color: #00ff41;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    padding: 15px 30px;
+    background: linear-gradient(145deg, #000000, #001a00);
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    min-width: 140px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+.pagination-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.pagination-btn:hover::before {
+    left: 100%;
+}
+
+.pagination-btn:hover {
+    background: linear-gradient(145deg, #00ff41, #00cc33);
+    color: #000;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
+    transform: translateY(-3px) scale(1.05);
+    border-color: #00cc33;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: #333;
+    color: #333;
+    background: #000;
+    transform: none;
+    box-shadow: none;
+}
+
+.pagination-btn:disabled:hover {
+    background: #000;
+    color: #333;
+    transform: none;
+    box-shadow: none;
+}
+
+.pagination-info {
+    color: #00cc33;
+    font-weight: 700;
+    font-size: 1.1rem;
     text-align: center;
+    min-width: 200px;
+    padding: 15px 25px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 25px;
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Characters Container */
+#characters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 600px;
+    position: relative;
+}
+
+.character-card {
+    background: linear-gradient(145deg, #000000, #001a00);
+    border: 2px solid #00ff41;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.character-card:hover::before {
+    left: 100%;
+}
+
+.character-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 255, 65, 0.5);
+    border-color: #00cc33;
+}
+
+.character-card h3 {
+    color: #00ff41;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-shadow: 0 0 15px rgba(0, 255, 65, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.2;
 }
 
 .character-card img {
     width: 100%;
-    border-radius: 8px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #00ff41;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
 }
 
-#filterType, #filterValue {
-    padding: 10px;
-    font-size: 16px;
-    margin: 10px auto;
-    width: 200px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    display: block;
+.character-card:hover img {
+    border-color: #00cc33;
+    transform: scale(1.05);
 }
 
-.heart-btn {
+.character-card p {
+    color: #00cc33;
+    margin: 6px 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 3px 0;
+    line-height: 1.3;
+}
+
+.favorite-btn {
     background: none;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    position: relative;
-    padding: 0;
-    margin-top: 10px;
-}
-
-.heart-shape {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    transform-origin: center;
-    background-color: #ccc;
-    transition: background-color 0.3s ease;
-}
-
-.heart-shape::before,
-.heart-shape::after {
-    content: '';
-    width: 24px;
-    height: 24px;
+    border: 2px solid #00ff41;
     border-radius: 50%;
-    background-color: #ccc;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    font-size: 1.4rem;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+.favorite-btn:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 25px rgba(0, 255, 65, 0.7);
+    transform: scale(1.15);
+}
+
+/* Loading Animation */
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #00ff41;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    width: 100%;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.heart-shape::before {
-    top: -12px;
-    left: 0;
+.loading::after {
+    content: '';
+    width: 25px;
+    height: 25px;
+    border: 3px solid #00ff41;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 15px;
+    flex-shrink: 0;
 }
 
-.heart-shape::after {
-    left: 12px;
-    top: 0;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.heart-btn.active .heart-shape,
-.heart-btn.active .heart-shape::before,
-.heart-btn.active .heart-shape::after {
-    background-color: red;
+/* Scrollbar Styling */
+/* Removed all scrollbar styling - no scrollbars allowed */
+
+/* Hide all scrollbars completely */
+* {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+*::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    .controls-section {
+        margin: 15px;
+        padding: 20px;
+    }
+    
+    .controls-row {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+    
+    .search-favorites-row {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+    
+    .control-group {
+        min-width: 250px;
+    }
+    
+    .search-group {
+        max-width: 250px;
+    }
+    
+    #searchInput, #filterType, #filterValue, #sortSelect {
+        min-width: 250px;
+    }
+    
+    #characters-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .pagination-controls {
+        gap: 15px;
+    }
+    
+    .pagination-btn {
+        padding: 10px 20px;
+        min-width: 100px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Rick and Morty Theme Elements */
+/* Removed the lightning bolt icon that was next to character names */
+
+/* Status Indicators */
+.status-alive {
+    color: #00ff41 !important;
+    text-shadow: 0 0 12px rgba(0, 255, 65, 0.6);
+    font-weight: 700;
+}
+
+.status-dead {
+    color: #ff0040 !important;
+    text-shadow: 0 0 12px rgba(255, 0, 64, 0.6);
+    font-weight: 700;
+}
+
+.status-unknown {
+    color: #ffaa00 !important;
+    text-shadow: 0 0 12px rgba(255, 170, 0, 0.6);
+    font-weight: 700;
 }

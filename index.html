@@ -3,42 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rick & morty gallery</title>
+    <title>Rick & Morty Gallery</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rick & Morty characters</h1>
+    <h1>Rick & Morty Characters</h1>
     
-    <label for="filterType">Filter by:</label>
-    <select id="filterType">
-        <option value="">--Select filter--</option>
-        <option value="status">Status</option>
-        <option value="species">Species</option>
-    </select>
+    <div class="controls-section">
+        <div class="controls-row">
+            <div class="control-group">
+                <label for="filterType">FILTER BY:</label>
+                <select id="filterType">
+                    <option value="">--Select filter--</option>
+                    <option value="status">Status</option>
+                    <option value="species">Species</option>
+                    <option value="gender">Gender</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="filterValue">VALUE:</label>
+                <select id="filterValue" disabled>
+                    <option value="">--Select a value--</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="sortSelect">SORT BY:</label>
+                <select id="sortSelect">
+                    <option value="">--No sorting--</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="status">Status</option>
+                    <option value="species">Species</option>
+                </select>
+            </div>
+            
+            <div class="control-group search-group">
+                <label for="searchInput">SEARCH:</label>
+                <input type="text" id="searchInput" placeholder="Search characters by name...">
+            </div>
+            
+            <div class="control-group favorites-group">
+                <label>FAVORITES:</label>
+                <div id="favoritesToggleContainer">
+                    <input type="checkbox" id="favoritesToggle">
+                    <span>SHOW ONLY FAVORITES</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <label for="filterValue">Value:</label>
-    <select id="filterValue" disabled>
-        <option value="">--Select a value--</option>
-    </select>
-
-    <label for="sortSelect">Sort by:</label>
-    <select id="sortSelect">
-        <option value="">--No sorting--</option>
-        <option value="name-asc">A - Z</option>
-        <option value="name-desc">Z - A</option>
-        <option value="status">Status</option>
-        <option value="species">Species</option>
-    </select>
-
-    <input
-    type="text"
-    id="searchInput"
-    placeholder="Search characters by name..."/>
-
-    <label id="favoritesToggleContainer" style="display: none; margin-top: 20px;">
-        <input type="checkbox" id="favoritesToggle">
-        <p>Show only favorites</p>
-    </label>
+    <div class="pagination-controls">
+        <button class="pagination-btn" id="prevBtn">Previous</button>
+        <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
+        <button class="pagination-btn" id="nextBtn">Next</button>
+    </div>
 
     <div id="characters-container"></div>
 
