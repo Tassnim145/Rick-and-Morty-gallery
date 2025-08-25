@@ -164,16 +164,21 @@ function updateCarouselInfo() {
     const currentStart = currentCarouselIndex + 1;
     const currentEnd = Math.min(currentCarouselIndex + carouselItemsPerView, totalItems);
     
-    // Update page info
+    // Update page info for both top and bottom pagination
     pageInfo.textContent = `${currentStart}-${currentEnd} of ${totalItems} characters`;
+    document.getElementById("pageInfoBottom").textContent = `${currentStart}-${currentEnd} of ${totalItems} characters`;
     
-    // Update button states
+    // Update button states for both top and bottom pagination
     prevBtn.disabled = currentCarouselIndex === 0;
     nextBtn.disabled = currentCarouselIndex + carouselItemsPerView >= totalItems;
+    document.getElementById("prevBtnBottom").disabled = currentCarouselIndex === 0;
+    document.getElementById("nextBtnBottom").disabled = currentCarouselIndex + carouselItemsPerView >= totalItems;
     
     // Update button text for better UX
     prevBtn.textContent = currentCarouselIndex === 0 ? 'First Page' : '← Previous';
-    nextBtn.textContent = currentCarouselIndex + carouselItemsPerView >= totalItems ? 'Last Page' : 'Next →';
+    nextBtn.textContent = currentCarouselIndex + carouselItemsPerView >= totalItems ? 'Next →' : 'Next →';
+    document.getElementById("prevBtnBottom").textContent = currentCarouselIndex === 0 ? 'First Page' : '← Previous';
+    document.getElementById("nextBtnBottom").textContent = currentCarouselIndex + carouselItemsPerView >= totalItems ? 'Next →' : 'Next →';
 }
 
 function getFilteredCharacters() {
@@ -284,6 +289,10 @@ sortSelect.addEventListener("change", applyFilters);
 favoritesToggle.addEventListener("change", applyFilters);
 prevBtn.addEventListener("click", goToPreviousPage);
 nextBtn.addEventListener("click", goToNextPage);
+
+// Bottom pagination event listeners
+document.getElementById("prevBtnBottom").addEventListener("click", goToPreviousPage);
+document.getElementById("nextBtnBottom").addEventListener("click", goToNextPage);
 
 // Keyboard navigation
 document.addEventListener('keydown', (e) => {
