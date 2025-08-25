@@ -4,7 +4,7 @@ const filterType = document.getElementById("filterType");
 const filterValue = document.getElementById("filterValue");
 const sortSelect = document.getElementById("sortSelect");
 const favoritesToggle = document.getElementById("favoritesToggle");
-const favoritesToggleContainer = document.getElementById("favoritesToggleContainer");
+
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const pageInfo = document.getElementById("pageInfo");
@@ -13,7 +13,7 @@ const pageInfo = document.getElementById("pageInfo");
 const characterModal = document.getElementById("characterModal");
 const modalCharacterName = document.getElementById("modalCharacterName");
 const modalCharacterImage = document.getElementById("modalCharacterImage");
-const modalStatusBadge = document.getElementById("modalStatusBadge");
+
 const modalSpecies = document.getElementById("modalSpecies");
 const modalGender = document.getElementById("modalGender");
 const modalStatus = document.getElementById("modalStatus");
@@ -29,8 +29,7 @@ const modalEpisodesList = document.getElementById("modalEpisodesList");
 
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 let allCharacters = [];
-let currentPage = 1;
-const cardsPerPage = 20; // Show 20 cards per page for better performance
+
 
 // Carousel functionality
 let currentCarouselIndex = 0;
@@ -250,9 +249,6 @@ function updateFilterValues() {
 function updateFavoritesToggleVisibility() {
     const hasFavorites = favorites.length > 0;
     
-    // Always keep the favorites toggle visible
-    // favoritesToggleContainer.style.display = "flex"; // Always visible
-    
     if (!hasFavorites) {
         favoritesToggle.checked = false;
     }
@@ -314,10 +310,7 @@ function openCharacterModal(character) {
     modalCharacterImage.src = character.image;
     modalCharacterImage.alt = character.name;
     
-    // Set status badge with appropriate class
-    const statusClass = `status-${character.status.toLowerCase()}`;
-    modalStatusBadge.className = `modal-status-badge ${statusClass}`;
-    modalStatusBadge.textContent = character.status;
+
     
     // Populate details
     modalSpecies.textContent = character.species || 'Unknown';
@@ -338,8 +331,7 @@ function openCharacterModal(character) {
     // Set episode count
     modalEpisodeCount.textContent = character.episode?.length || 0;
     
-    // Debug: Log episode data
-    console.log(`Episode data for ${character.name}:`, character.episode);
+
     
     // Populate episodes list
     modalEpisodesList.innerHTML = '';

@@ -758,9 +758,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
 }
 
-.modal-status-badge {
-    display: none;
-}
+
 
 .modal-details-section {
     flex: 1;
