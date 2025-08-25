@@ -242,4 +242,3 @@ document.addEventListener('keydown', (e) => {
 
 // Initialize the app
 fetchAllCharacters();
-
